@@ -3,30 +3,53 @@ import { Grid, Box, Typography } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import TaskList from "./TaskList";
 
-const TaskHolder = ({ tasks }) => {
-  const nowTasks = tasks.filter((task) => task.status === "now");
-  const laterTasks = tasks.filter((task) => task.status === "later");
-  const backlogTasks = tasks.filter((task) => task.status === "backlog");
-
+const TaskHolder = ({ tasks, handleDelete, handleToggle }) => {
+  const nowTasks = tasks
+    ? tasks
+        .map((task, index) => ({ ...task, originalIndex: index }))
+        .filter((task) => task.status === "now")
+    : [];
+  const laterTasks = tasks
+    ? tasks
+        .map((task, index) => ({ ...task, originalIndex: index }))
+        .filter((task) => task.status === "later")
+    : [];
+  const backlogTasks = tasks
+    ? tasks
+        .map((task, index) => ({ ...task, originalIndex: index }))
+        .filter((task) => task.status === "backlog")
+    : [];
   return (
     <Container>
       <Grid container>
-        <Grid xs={4} className="nowContainer">
+        <Grid item xs={4} className="nowContainer">
           <Stack>
             <Box sx={categoryBox}>Now</Box>
-            <TaskList tasks={nowTasks} />
+            <TaskList
+              tasks={nowTasks}
+              handleToggle={(task) => handleToggle(task)}
+              handleDelete={(id) => handleDelete(id)}
+            />
           </Stack>
         </Grid>
-        <Grid xs={4} className="laterContainer">
+        <Grid item xs={4} className="laterContainer">
           <Stack>
             <Box sx={categoryBox}>Later</Box>
-            <TaskList tasks={laterTasks} />
+            <TaskList
+              tasks={laterTasks}
+              handleToggle={(task) => handleToggle(task)}
+              handleDelete={(id) => handleDelete(id)}
+            />
           </Stack>
         </Grid>
-        <Grid xs={4}>
+        <Grid item xs={4}>
           <Stack>
             <Box sx={categoryBox}>Backlog</Box>
-            <TaskList tasks={backlogTasks} />
+            <TaskList
+              tasks={backlogTasks}
+              handleToggle={(task) => handleToggle(task)}
+              handleDelete={(id) => handleDelete(id)}
+            />
           </Stack>
         </Grid>
       </Grid>
@@ -40,7 +63,7 @@ const categoryBox = {
   backgroundColor: "#D9D9D9",
   width: "80%",
   height: "60px",
-  color: "red",
+  color: "#AF4242",
   textAlign: "center",
   fontWeight: "bold",
   display: "flex",

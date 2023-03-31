@@ -1,12 +1,29 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const TaskList = ({ tasks }) => {
+const TaskList = ({ tasks, handleToggle, handleDelete }) => {
   return (
     <>
       {tasks.map((task) => (
         <Box key={task.id} sx={detailBox}>
-          {task.title}
+          <span
+            style={task.completed ? { textDecoration: "line-through" } : {}}
+          >
+            {task.title}
+          </span>
+          <Checkbox
+            checked={task.completed}
+            onChange={() => handleToggle(task.id)}
+          />
+          <IconButton
+            onClick={() => handleDelete(task.id)}
+            edge="end"
+            aria-label="delete"
+          >
+            <DeleteIcon />
+          </IconButton>
         </Box>
       ))}
     </>

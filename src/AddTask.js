@@ -4,15 +4,22 @@ import React, { useState } from "react";
 import TaskList from "./TaskList";
 import TaskInput from "./TaskInput";
 import TaskHolder from "./TaskHolder";
+import { v4 as uuid } from "uuid";
 
-const AddTask = () => {
-  const [todoList, setToDoList] = useState([]);
+const AddTask = ({ todoList, setToDoList }) => {
+  // const [todoList, setToDoList] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
 
   const handleAddTask = (task, tag) => {
     if (task && tag) {
-      const newTask = { task: task, completed: false, tag: tag };
+      const newTask = {
+        id: uuid(),
+        title: task,
+        completed: false,
+        tag: tag,
+      };
+
       if (tag === "Now") {
         newTask.status = "now";
       } else if (tag === "Later") {
@@ -38,24 +45,19 @@ const AddTask = () => {
     setInputValue(event.target.value);
   };
 
-  const handleToggle = (index) => {
-    setToDoList((prevList) => {
-      const newList = [...prevList];
-      const item = newList[index];
-      if (item) {
-        item.completed = !item.completed;
-      }
-      return newList;
-    });
+  const handleToggle = (id) => {
+    setToDoList((prevList) =>
+      prevList.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
   };
 
-  const handleDelete = (index) => {
-    setToDoList((prevList) => {
-      const newList = [...prevList];
-      newList.splice(index, 1);
-      return newList;
-    });
+  const handleDelete = (id) => {
+    setToDoList((prevList) => prevList.filter((task) => task.id !== id));
   };
+
+  console.log("here are my tasks", JSON.stringify(todoList));
   return (
     <>
       <TaskInput
@@ -65,14 +67,20 @@ const AddTask = () => {
         handleTagClick={handleTagClick}
       />
 
-      {todoList.length > 0 && (
+      <TaskHolder
+        tasks={todoList}
+        handleToggle={handleToggle}
+        handleDelete={handleDelete}
+      />
+
+      {/* {todoList.length > 0 && (
         <TaskList
-          todoList={todoList}
+          tasks={todoList}
           handleClear={handleClear}
           handleToggle={handleToggle}
           handleDelete={handleDelete}
         />
-      )}
+      )} */}
     </>
   );
 };
